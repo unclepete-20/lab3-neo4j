@@ -129,15 +129,17 @@ ratings = [
 
 
 
-# All functions that will create Nodes and Relationship objects between them
+# create_user method creates a new user node in a Neo4j database
 def create_user(tx, users):
     query = "MERGE (u:User {name: $users.name, userId: $users.userId})"
     tx.run(query, users=users)
-    
+
+# create_movie method creates a new movie node in a Neo4j database
 def create_movie(tx, movies):  
     query = "MERGE (m:Movie {title: $movies.title, movieId: $movies.movieId, year: $movies.year, plot: $movies.plot})"
     tx.run(query, movies=movies)
 
+# create_rated_relationship creates a RATED relationship between user and movie nodes in a Neo4j database
 def create_rated_relationship(tx, ratings):
     query = '''
     MATCH (u:User), (m:Movie)
@@ -147,18 +149,39 @@ def create_rated_relationship(tx, ratings):
     '''
     tx.run(query, ratings=ratings)
 
+# find_user_and_movie_with_relationships method finds a user and its movie relationships in a Neo4j database
+def find_user_and_movie_with_relationships(tx, user_id):
+    query = '''
+    MATCH (u:User {userId: $user_id})-[r]->(m:Movie)
+    RETURN u, r, m
+    '''
+    result = tx.run(query, user_id=user_id)
+    return result.data()
 
+# This part of the code creates the connection to the Neo4j database
 with GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USERNAME, NEO4J_PASSWORD)) as driver: 
     with driver.session(database="neo4j") as session:
+        
 
+        # User nodes are inserted into the database
         for user in users:
             session.execute_write(create_user, user)
 
-        
+        # User nodes are inserted into the database
         for movie in movies:
             session.execute_write(create_movie, movie)
         
+        # RATED relationships are created between User and Movie nodes
         for rating in ratings:
             session.execute_write(create_rated_relationship, rating)
-
+        
+        # Query to get the user relationships
+        user_id = "1"
+        user_movie_relationships = session.execute_read(find_user_and_movie_with_relationships, user_id)
+        print("User and Movie Relationships:")
+        for relationship in user_movie_relationships:
+            print(relationship)
+        
+        # Session and driver are closed in order to release any resources still held by them.
+        session.close()
         driver.close()
