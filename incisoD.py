@@ -7,25 +7,29 @@ def create_user2(tx, user):
 # create_movie method creates a new movie node in a Neo4j database
 def create_movie2(tx, movie):
     query = """
-    MERGE (m:Movie {title: $title, movieId: $movieId, year: $year, 
-                     plot: $plot, revenue: $revenue, budget: $budget})
-    SET m.imdbRating = $imdbRating, m.releaseDate = $releaseDate, m.imdbId = $imdbId, 
-        m.runtime = $runtime, m.imdbVotes = $imdbVotes, m.url = $url
+        MERGE (m:Movie {title: $title, released: $released, tmdbId: $tmdbId, imdbRating: $imdbRating, 
+                        movieId: $movieId, year: $year, imdbId: $imdbId, runtime: $runtime, 
+                        countries: $countries, imdbVotes: $imdbVotes, url: $url, revenue: $revenue, 
+                        plot: $plot, poster: $poster, budget: $budget, languages: $languages})
     """
     tx.run(
         query,
         title=movie["title"],
+        released=movie["released"],
+        tmdbId=movie["tmdbId"],
+        imdbRating=movie["imdbRating"],
         movieId=movie["movieId"],
         year=movie["year"],
-        plot=movie["plot"],
-        revenue=movie["revenue"],
-        budget=movie["budget"],
-        imdbRating=movie["imdbRating"],
-        releaseDate=movie["releaseDate"],
         imdbId=movie["imdbId"],
         runtime=movie["runtime"],
+        countries=movie["countries"],
         imdbVotes=movie["imdbVotes"],
         url=movie["url"],
+        revenue=movie["revenue"],
+        plot=movie["plot"],
+        poster=movie["poster"],
+        budget=movie["budget"],
+        languages=movie["languages"],
     )
 
 
@@ -135,3 +139,44 @@ def create_person_director(tx, person_director):
     SET pd.directed = $person_director['directed']
     """
     tx.run(query, person_director=person_director)
+
+
+# create_person_actor_director method creates a new person actor director node in a Neo4j database
+def create_person_actor_director(tx, person_actor_director):
+    query = """
+    MERGE (pad:PersonActorDirector {name: $person_actor_director['name'], tmdbId: $person_actor_director['tmdbId'], 
+                               born: $person_actor_director['born'], died: $person_actor_director['died'], bornIn: $person_actor_director['bornIn'], 
+                               url: $person_actor_director['url'], imdbId: $person_actor_director['imdbId'], bio: $person_actor_director['bio'], 
+                               poster: $person_actor_director['poster']})
+    SET pad.acted_in = $person_actor_director['acted_in'], pad.directed = $person_actor_director['directed']
+    """
+    tx.run(query, person_actor_director=person_actor_director)
+
+
+# create_acted_in_relationship method creates an ACTED_IN relationship between a person actor director and a movie node in a Neo4j database
+def create_acted_in_relationshipPAD(tx, relationship):
+    query = """
+    MATCH (p:PersonActorDirector {tmdbId: $personId}), (m:Movie {movieId: $movieId})
+    MERGE (p)-[r:ACTED_IN {role: $role}]->(m)
+    RETURN type(r)
+    """
+    tx.run(
+        query,
+        personId=relationship["personId"],
+        movieId=relationship["movieId"],
+        role=relationship["role"],
+    )
+
+
+def create_directed_relationshipPAD(tx, relationship):
+    query = """
+    MATCH (p:PersonActorDirector {tmdbId: $personId}), (m:Movie {movieId: $movieId})
+    MERGE (p)-[r:DIRECTED {role: $role}]->(m)
+    RETURN type(r)
+    """
+    tx.run(
+        query,
+        personId=relationship["personId"],
+        movieId=relationship["movieId"],
+        role=relationship["role"],
+    )

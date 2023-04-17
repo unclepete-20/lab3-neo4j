@@ -68,7 +68,7 @@ movies2 = [
     {
         "title": "The Godfather",
         "tmdbId": 238,
-        "releaseDate": "1972-03-14",
+        "released": "1972-03-14",
         "imdbRating": 9.2,
         "movieId": 100,
         "year": 1972,
@@ -81,11 +81,12 @@ movies2 = [
         "plot": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
         "budget": 6000000,
         "languages": ["English", "Italian", "Latin"],
+        "poster": "https://www.imdb.com/2000/POSTER",
     },
     {
         "title": "The Shawshank Redemption",
         "tmdbId": 278,
-        "releaseDate": "1994-09-23",
+        "released": "1994-09-23",
         "imdbRating": 8.7,
         "movieId": 101,
         "year": 1994,
@@ -98,9 +99,9 @@ movies2 = [
         "plot": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
         "budget": 100,
         "languages": ["English", "Spanish"],
+        "poster": "https://www.imdb.com/2000/POSTER",
     },
 ]
-
 # Label PersonActorDirector
 PAD = [
     {
@@ -226,22 +227,25 @@ actedIn = [
     {"movieId": 102, "personId": 113, "role": "Actor"},
     {"movieId": 102, "personId": 1, "role": "Actor"},
     {"movieId": 101, "personId": 1000, "role": "Actor"},
-    {"movieId": 100, "personId": 120, "role": "Director"},
 ]
 
 
 DIRECTED = [
     {"movieId": 100, "personId": 120, "role": "Director"},
     {"movieId": 102, "personId": 3100, "role": "Director"},
+    {"movieId": 1, "personId": 38, "role": "Director"},
+    {"movieId": 101, "personId": 38, "role": "Director"},
 ]
 
 DIRECTED2 = [
     {"movieId": 101, "personId": 38, "role": "Director"},
     {"movieId": 102, "personId": 223, "role": "Director"},
+    {"movieId": 100, "personId": 223, "role": "Director"},
 ]
 
 
 ACTED_IN = [
     {"movieId": 100, "personId": 1, "role": "Actor"},
     {"movieId": 102, "personId": 3000, "role": "Actor"},
+    {"movieId": 100, "personId": 223, "role": "Actor"},
 ]

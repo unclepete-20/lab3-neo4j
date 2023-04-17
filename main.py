@@ -73,7 +73,7 @@ def IncisoD():
 
             # Create PAD
             for pad in PAD:
-                session.execute_write(create_person_actor, pad)
+                session.execute_write(create_person_actor_director, pad)
 
             # Create PA
             for pa in PA:
@@ -97,11 +97,14 @@ def IncisoD():
             for relationship in DIRECTED:
                 session.execute_write(create_directed_relationship, relationship)
 
-            for relationship in DIRECTED2:
-                session.execute_write(create_directed_relationship, relationship)
-
             for relationship in ACTED_IN:
                 session.execute_write(create_acted_in_relationship, relationship)
+
+            for relationship in DIRECTED2:
+                session.execute_write(create_directed_relationshipPAD, relationship)
+
+            for relationship in ACTED_IN:
+                session.execute_write(create_acted_in_relationshipPAD, relationship)
 
             # Create ratings
             for rating in ratings2:
